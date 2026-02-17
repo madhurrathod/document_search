@@ -4,8 +4,11 @@ If any person has lots of documents stored in some folder and he/she wants to se
 For this ML algorithms will be used. 
 
 Tech Stack:
+
 Backend: OOPs with typescript
+
 Frontend: typescript, shadcn
+
 ML algorithms: Langgraph, RAG system.
 
 
