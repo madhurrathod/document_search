@@ -1,1 +1,1 @@
-<img width="872" height="353" alt="sequence diagram" src="https://github.com/user-attachments/assets/97801f27-e1ce-406b-b05a-e44d67397606" />
+<img width="875" height="353" alt="sequence diagram" src="https://github.com/user-attachments/assets/ce005cd0-2686-4735-9406-da0b3346ab3c" />
