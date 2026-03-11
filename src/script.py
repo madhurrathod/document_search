@@ -10,5 +10,8 @@ print(reader)
 # print(number_of_pages)
 # print(content)
 
+# Implementing CBOW
+import tensorflow as tf
+
 
 
