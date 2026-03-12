@@ -6,12 +6,10 @@ number_of_pages = len(reader.pages)
 pageObj = reader.pages[0]
 
 content = pageObj.extract_text()
-print(reader)
-# print(number_of_pages)
-# print(content)
+print(number_of_pages)
+print(content)
 
-# Implementing CBOW
-import tensorflow as tf
+
 
 
 
