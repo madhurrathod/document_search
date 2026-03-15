@@ -1,18 +1,22 @@
 from pypdf import PdfReader
-
-reader = PdfReader("temporary_docs/Attention Is All You Need.pdf")
-
-number_of_pages = len(reader.pages)
-pageObj = reader.pages[0]
-
-content = pageObj.extract_text()
-print(number_of_pages)
-print(content)
-
-
-
+class ReadDoc:
+    def __init__(self, url):
+        self.url = url
+        self.reader = PdfReader(url)
     
-    
+    def getPageContent(self, pageNo):
+        try:
+            pageObj = self.reader.pages[pageNo]
+        except:
+            print("Page not Found")
+        else:
+            content = pageObj.extract_text()
+            return content
+        
+url = "temporary_docs/Attention Is All You Need.pdf"
+doc1 = ReadDoc(url)
+print(doc1.getPageContent(0))
+        
         
         
 
