@@ -7,6 +7,7 @@ While creating this project I havent used any AI tools I've taken references fro
 5. [Sentiment Analysis](https://www.geeksforgeeks.org/machine-learning/what-is-sentiment-analysis/)
 6. [Document Classification](https://www.geeksforgeeks.org/machine-learning/classification-of-text-documents-using-the-approach-of-naive-bayes/)
 7. [Python OOP Concepts](https://www.geeksforgeeks.org/python/python-oops-concepts/)
+8. [Conventional Commit Messages](https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13)
 
 Reserach Papers
 1. [Attention is All You Need](https://arxiv.org/abs/1706.03762)
