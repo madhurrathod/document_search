@@ -15,10 +15,9 @@ class ReadDoc:
         else:
             content = pageObj.extract_text()
             return content
+    def pageCount(self):
+        return len(self.reader.pages)
         
-url = "temporary_docs/Attention Is All you Need.pdf"
-doc1 = ReadDoc(url)
-print(doc1.getPageContent(0))
         
         
         
