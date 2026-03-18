@@ -8,3 +8,4 @@ onePage = doc1.getPageContent(0)
 onePageSplit = onePage.split(".")
 print(onePageSplit)
 
+

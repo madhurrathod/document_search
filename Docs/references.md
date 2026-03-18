@@ -14,3 +14,4 @@ Topic References
 7. [Python OOP Concepts](https://www.geeksforgeeks.org/python/python-oops-concepts/)
 8. [Conventional Commit Messages](https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13)
 9. [How to import a class from another file in Python ?](https://www.geeksforgeeks.org/python/how-to-import-a-class-from-another-file-in-python/)
+10. [Numpy, Pandas vs Python](https://medium.com/@jaiymzndubuisi/diving-deep-with-pandas-and-numpy-my-journey-as-an-ai-ml-enthusiast-9226dad2ccbd)
