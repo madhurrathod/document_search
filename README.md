@@ -1,6 +1,8 @@
 # Tech Stack
-Python - 
-    Read document: PyPDF 
+Python - \
+    PyPDF: Read document \
+    Numpy: preprocessing \
+
 
 # document_search
 you'll be able to find the relevant doc from the pool of documents by typing few words relevant to that doc that you remember.
