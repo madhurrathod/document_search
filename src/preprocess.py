@@ -6,9 +6,16 @@ import numpy as np
 doc = read.ReadDoc("temporary_docs/Attention Is All You Need.pdf")
 size = doc.pageCount()
 
-wholeArr = np.array([])
+# wholeArr = np.array([])
 Page = doc.getPageContent(0)
 removeSlashN = Page.replace("\n", " ")
 splitSentences = removeSlashN.split(".")
-nparr = np.array(splitSentences)
-print(nparr)
+# nparr = np.array(splitSentences)
+# print(nparr)
+
+
+doc_label = "Attention Is All You Need"
+import pandas as pd
+df = pd.DataFrame(splitSentences)
+label = pd.array(data = doc_label,dtype="string" )
+

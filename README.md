@@ -1,7 +1,7 @@
 # Tech Stack
 Python - \
     PyPDF: Read document \
-    Numpy: preprocessing \
+    Numpy: preprocessing 
 
 
 # document_search
