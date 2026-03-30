@@ -19,6 +19,4 @@ for i in range(total_pages):
     All_sentences = All_sentences + sentences
 
 print(len(All_sentences))
-    
-
 
