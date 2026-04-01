@@ -1,4 +1,4 @@
-While creating this project I havent used any AI tools I've taken references from various sources, so linking each of them also mentioning what their intended work is.
+While creating this project I've taken references from various sources, so linking each of them also mentioning what their intended work is.
 
 Reserach Papers
 1. [Attention is All You Need](https://arxiv.org/abs/1706.03762)
