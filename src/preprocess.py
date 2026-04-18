@@ -3,20 +3,28 @@
 import read
 import numpy as np
 import pandas as pd
-
-doc = read.ReadDoc("temporary_docs/Attention Is All You Need.pdf")
-total_pages = doc.pageCount()
+import os
 
 def cleanPage(page):
     removeSlashN = page.replace("\n", " ")
     splitSentences = removeSlashN.split(".")
     return splitSentences
 
-All_sentences = []
-for i in range(total_pages):
-    page = doc.getPageContent(i)
-    sentences = cleanPage(page)
-    All_sentences = All_sentences + sentences
+folder_path = "temporary_docs"
+data = []
 
-print(len(All_sentences))
+for file in os.listdir(folder_path):
+    if file.endswith(".pdf"):
+        label = file.replace(".pdf","")
+        doc = read.ReadDoc(os.path.join(folder_path, file))
+        total_pages = doc.pageCount()
+            
+        for i in range(total_pages):
+            page = doc.getPageContent(i)
+            sentences = cleanPage(page)
+            for sentence in sentences:
+                data.append({"text":sentence, "label":label})
+
+df = pd.DataFrame(data)
+print(df.head())
 
