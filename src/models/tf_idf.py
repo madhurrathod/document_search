@@ -7,7 +7,7 @@ data['text'] = data['text'].fillna("").astype(str)
 vectorizer = TfidfVectorizer()
 X = vectorizer.fit_transform(data['text'])
 
-def search(query, top_k=5):
+def search(query, top_k=3):
     q = vectorizer.transform([query])
     sims = cosine_similarity(q, X)[0]
 
