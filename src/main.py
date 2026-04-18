@@ -1,12 +1,17 @@
+import os
 import streamlit as st
 from services.search_service import SearchService
 from services.data_service import DataService
+
 
 st.title("Document Search")
 
 data_service = DataService("temporary_docs") 
 search_service = SearchService("dataset.csv")
 
+if not os.path.exists("dataset.csv"):
+    data_service.rebuild()
+    
 if st.button("Rebuild Dataset"):
     data_service.rebuild()
     st.success("Dataset rebuilt!")
