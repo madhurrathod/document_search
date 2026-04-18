@@ -5,6 +5,8 @@ Reserach Papers
 2. [Game Development as Human-LLM Interaction](https://arxiv.org/abs/2408.09386)
 3. [PerceptionComp: A Video Benchmark for Complex Perception-Centric Reasoning](https://arxiv.org/abs/2603.26653)
 4. [A Lock-Free, Fully GPU-Resident Architecture for the Verification of Goldbach’s Conjecture](https://arxiv.org/abs/2603.07850)
+5. [String Theory](https://arxiv.org/abs/hep-th/9411028)
+6. [Lagrange Theorem](https://www.researchgate.net/publication/370702734_Lagrange's_Theorem_in_Group_Theory_Proof_and_Applications)
 
 Topic References
 1. [Folder structure](https://mingyang-li.medium.com/production-grade-node-js-typescript-folder-structure-for-2024-f975edeabefd)
