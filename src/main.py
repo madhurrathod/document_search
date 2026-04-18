@@ -22,7 +22,7 @@ docs = data_service.list_docs()
 # box for scrolling documents
 box = '<div style="height:200px; overflow-y:auto; border:1px solid #ccc; padding:10px; border-radius:10px">'
 for d in docs:
-    box += f'<p style="padding:5px 10px 5px 10px;border:1px solid #ccc; border-radius:10px"=>{d}</p>'
+    box += f'<p style="padding:5px 10px 5px 10px;border:1px solid #ccc; border-radius:10px">{d}</p>'
 box += "</div>"
 
 st.markdown(box, unsafe_allow_html=True)

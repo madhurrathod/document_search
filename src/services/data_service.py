@@ -11,3 +11,6 @@ class DataService:
         
     def list_docs(self):
         return [f.replace(".pdf","") for f in os.listdir(self.folder_path) if f.endswith(".pdf")]
+
+    def get_doc_path(self, label):
+        return os.path.join(self.folder_path, label + ".pdf")

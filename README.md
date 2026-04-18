@@ -1,7 +1,10 @@
 # Tech Stack
 Python - \
     PyPDF: Read document \
-    Numpy: preprocessing 
+    Pandas: preprocessing \
+    streamlit: frontend, hosting \
+    sklearn: TfidfVectorizer, cosine_similarity
+
 
 
 # document_search
