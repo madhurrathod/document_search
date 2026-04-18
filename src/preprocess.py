@@ -26,5 +26,6 @@ for file in os.listdir(folder_path):
                 data.append({"text":sentence, "label":label})
 
 df = pd.DataFrame(data)
-print(df.head())
+df.to_csv("dataset.csv", index=False)
+
 

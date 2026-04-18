@@ -19,3 +19,4 @@ Topic References
 10. [Numpy, Pandas vs Python](https://medium.com/@jaiymzndubuisi/diving-deep-with-pandas-and-numpy-my-journey-as-an-ai-ml-enthusiast-9226dad2ccbd)
 11. [Numpy](https://numpy.org/doc/stable/user/absolute_beginners.html)
 12. [Pandas](https://pandas.pydata.org/docs/index.html)
+13. [Semantic similarity in NLP](https://www.geeksforgeeks.org/nlp/different-techniques-for-sentence-semantic-similarity-in-nlp/)
