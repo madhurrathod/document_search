@@ -1,2 +1,13 @@
 __pycache__
 *.pyc
+.venv/
+venv/
+
+.DS_Store
+.vscode/
+.idea/
+
+chroma_db/
+dataset.csv
+
+.env

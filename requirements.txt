@@ -2,3 +2,8 @@ streamlit
 pandas
 scikit-learn
 pypdf
+langchain
+langchain-community
+chromadb
+sentence-transformers
+
