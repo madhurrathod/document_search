@@ -2,8 +2,9 @@ streamlit
 pandas
 scikit-learn
 pypdf
-langchain
-langchain-community
-chromadb
+fastapi
+uvicorn
+faiss-cpu
 sentence-transformers
-
+cloudinary
+python-dotenv
