@@ -11,3 +11,5 @@ chroma_db/
 dataset.csv
 
 .env
+
+storage/
