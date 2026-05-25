@@ -1,21 +1,28 @@
-import sqlite3
-import os
+import streamlit as st
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
-DB_PATH = "storage/docs.db"
-os.makedirs("storage", exist_ok=True)
+
 def get_connection():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA foreign_keys = ON")
-    return conn
+    return psycopg2.connect(
+        host=st.secrets["postgres"]["host"],
+        port=st.secrets["postgres"]["port"],
+        dbname=st.secrets["postgres"]["database"],
+        user=st.secrets["postgres"]["user"],
+        password=st.secrets["postgres"]["password"],
+        sslmode=st.secrets["postgres"]["sslmode"],
+        cursor_factory=RealDictCursor,
+    )
+
 
 def init_db():
     conn = get_connection()
-
     try:
-        conn.execute("""
+        cur = conn.cursor()
+
+        cur.execute("""
             CREATE TABLE IF NOT EXISTS documents (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id SERIAL PRIMARY KEY,
                 filename TEXT NOT NULL,
                 cloudinary_url TEXT NOT NULL,
                 cloudinary_public_id TEXT NOT NULL UNIQUE,
@@ -23,19 +30,19 @@ def init_db():
             )
         """)
 
-        conn.execute("""
+        cur.execute("""
             CREATE TABLE IF NOT EXISTS chunks (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                document_id INTEGER NOT NULL,
+                id SERIAL PRIMARY KEY,
+                document_id INTEGER NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
                 page_number INTEGER NOT NULL,
                 text TEXT NOT NULL,
-                FOREIGN KEY(document_id) REFERENCES documents(id) ON DELETE CASCADE
+                UNIQUE(document_id, page_number)
             )
         """)
 
-        conn.execute("""
-                CREATE INDEX IF NOT EXISTS idx_chunks_document_id
-                ON chunks(document_id)
+        cur.execute("""
+            CREATE INDEX IF NOT EXISTS idx_chunks_document_id
+            ON chunks(document_id)
         """)
 
         conn.commit()

@@ -4,9 +4,20 @@ from services.document_service import process_uploaded_document
 from db.db_service import get_all_documents
 from db.database import init_db
 from services.search_service import SearchService
+from db.database import get_connection
+st.set_page_config(page_title="Document Search", page_icon="📄", layout="wide")
+init_db()
+
+try:
+    conn = get_connection()
+    conn.close()
+    st.success("Supabase connected successfully")
+except Exception as e:
+    st.error(f"Database connection failed: {e}")
 
 st.set_page_config(page_title="Document Search", page_icon="📄", layout="wide")
 init_db()
+
 st.title("Document Search")
 
 MAX_FILE_SIZE_MB = 10

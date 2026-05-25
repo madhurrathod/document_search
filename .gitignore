@@ -19,3 +19,5 @@ storage/*.sqlite
 storage/*.sqlite3
 storage/*.index
 storage/*.json
+
+.streamlit/secrets.toml
