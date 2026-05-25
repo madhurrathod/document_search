@@ -1,7 +1,7 @@
 from io import BytesIO
 from pypdf import PdfReader
 from services.cloudinary_service import upload_pdf
-from services.db_service import insert_document, insert_chunk
+from db.db_service import insert_document, insert_chunk
 
 def save_document_with_chunks(filename, cloudinary_url, cloudinary_public_id, chunks):
     doc_id = insert_document(filename, cloudinary_url, cloudinary_public_id)
