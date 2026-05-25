@@ -6,17 +6,17 @@ If the exact file name is forgotten, the user can type a few words, a line, or a
 # Technical overview
 This project is built using:
 
-Streamlit for the user interface.
+**Streamlit** for the user interface.
 
-Supabase Postgres for storing document metadata and text chunks.
+**Supabase Postgres** for storing document metadata and text chunks.
 
-Cloudinary for storing uploaded PDF files.
+**Cloudinary** for storing uploaded PDF files.
 
-PyPDF for reading and extracting text from PDFs.
+**PyPDF** for reading and extracting text from PDFs.
 
-Sentence Transformers for generating embeddings.
+**Sentence Transformers** for generating embeddings.
 
-FAISS for semantic similarity search.
+**FAISS** for semantic similarity search.
 
 ## Flow:
 
