@@ -1,15 +1,21 @@
-__pycache__
+__pycache__/
 *.pyc
+*.pyo
+*.pyd
+
 .venv/
 venv/
 
+.env
+.env.*
+
 .DS_Store
+
 .vscode/
 .idea/
 
-chroma_db/
-dataset.csv
-
-.env
-
-storage/storage/
+storage/*.db
+storage/*.sqlite
+storage/*.sqlite3
+storage/*.index
+storage/*.json
