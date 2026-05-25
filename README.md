@@ -1,4 +1,4 @@
-# What this project does
+# About Document Search
 Document Search helps find the right PDF from a collection of uploaded documents.
 
 If the exact file name is forgotten, the user can type a few words, a line, or an idea remembered from the document. The app then returns the most relevant matching document sections.
