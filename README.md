@@ -49,15 +49,11 @@ user = "postgres.YOUR_PROJECT_REF"
 password = "YOUR_PASSWORD"
 sslmode = "require"
 ```
-Add Cloudinary credentials too if your services use them.
-
-3. Ignore secret files
-Add this to .gitignore:
+3. Add cloudinary details
 ```text
-.env
-.streamlit/secrets.toml
-__pycache__/
-storage/
+CLOUDINARY_CLOUD_NAME = "your_cloudinary_name"
+CLOUDINARY_API_KEY = "your_cloudinary_api_key"
+CLOUDINARY_API_SECRET = "your_cloudinary_api_secret"
 ```
 4. Run the app
 ```bash
