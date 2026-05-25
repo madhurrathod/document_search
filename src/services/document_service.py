@@ -1,15 +1,12 @@
 from io import BytesIO
+
 from pypdf import PdfReader
+
+from db.db_service import insert_document, insert_chunks
 from services.cloudinary_service import upload_pdf
-from db.db_service import insert_document, insert_chunk
+from services.embedding_service import EmbeddingService
+from services.faiss_search_service import FaissSearchService
 
-def save_document_with_chunks(filename, cloudinary_url, cloudinary_public_id, chunks):
-    doc_id = insert_document(filename, cloudinary_url, cloudinary_public_id)
-
-    for page_number, text in chunks:
-        insert_chunk(doc_id, page_number, text)
-
-    return doc_id
 
 def process_uploaded_document(uploaded_file):
     file_bytes = uploaded_file.getvalue()
@@ -23,9 +20,25 @@ def process_uploaded_document(uploaded_file):
         if text and text.strip():
             chunks.append((i + 1, text.strip()))
 
-    return save_document_with_chunks(
+    if not chunks:
+        raise ValueError("No readable text found in the uploaded PDF.")
+
+    doc_id = insert_document(
         uploaded_file.name,
         result["secure_url"],
         result["public_id"],
-        chunks
     )
+
+    inserted_chunks = insert_chunks(doc_id, chunks)
+
+    texts = [chunk["text"] for chunk in inserted_chunks]
+    chunk_ids = [chunk["chunk_id"] for chunk in inserted_chunks]
+
+    embedding_service = EmbeddingService()
+    embeddings = embedding_service.embed_texts(texts)
+
+    if embeddings.size > 0:
+        faiss_service = FaissSearchService(dimension=embeddings.shape[1])
+        faiss_service.add_embeddings(chunk_ids, embeddings)
+
+    return doc_id

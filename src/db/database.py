@@ -12,25 +12,32 @@ def get_connection():
 def init_db():
     conn = get_connection()
 
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS documents (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            filename TEXT NOT NULL,
-            cloudinary_url TEXT NOT NULL,
-            cloudinary_public_id TEXT NOT NULL,
-            uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
+    try:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS documents (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                filename TEXT NOT NULL,
+                cloudinary_url TEXT NOT NULL,
+                cloudinary_public_id TEXT NOT NULL,
+                uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
 
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS chunks (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            document_id INTEGER NOT NULL,
-            page_number INTEGER NOT NULL,
-            text TEXT NOT NULL,
-            FOREIGN KEY(document_id) REFERENCES documents(id) ON DELETE CASCADE
-        )
-    """)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS chunks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                document_id INTEGER NOT NULL,
+                page_number INTEGER NOT NULL,
+                text TEXT NOT NULL,
+                FOREIGN KEY(document_id) REFERENCES documents(id) ON DELETE CASCADE
+            )
+        """)
 
-    conn.commit()
-    conn.close()
+        conn.execute("""
+                CREATE INDEX IF NOT EXISTS idx_chunks_document_id
+                ON chunks(document_id)
+        """)
+
+        conn.commit()
+    finally:
+        conn.close()
