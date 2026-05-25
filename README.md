@@ -34,8 +34,9 @@ FAISS for semantic similarity search.
 
 ## Setup
 1. Install dependencies
-bash
+```bash
 pip install -r requirements.txt
+```
 2. Add secrets
 Create .streamlit/secrets.toml:
 
