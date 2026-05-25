@@ -2,9 +2,11 @@ import streamlit as st
 
 from services.document_service import process_uploaded_document
 from db.db_service import get_all_documents
+from db.database import init_db
+from services.search_service import SearchService
 
 st.set_page_config(page_title="Document Search", page_icon="📄", layout="wide")
-
+init_db()
 st.title("Document Search")
 
 MAX_FILE_SIZE_MB = 10
@@ -41,3 +43,28 @@ else:
                 st.write(f"**{doc['filename']}**")
             with col2:
                 st.link_button("View PDF", doc["cloudinary_url"])
+                
+                
+st.subheader("Semantic Search")
+
+query = st.text_input("Ask about document content")
+top_k = st.slider("Number of results", min_value=1, max_value=10, value=5)
+
+if query.strip():
+    try:
+        search_service = SearchService()
+        results = search_service.search(query, top_k=top_k)
+
+        if not results:
+            st.info("No matching results found.")
+        else:
+            for result in results:
+                with st.container(border=True):
+                    st.write(f"**Document:** {result['filename']}")
+                    st.write(f"**Page:** {result['page_number']}")
+                    st.write(f"**Similarity Score:** {result['score']:.4f}")
+                    st.write(result["snippet"])
+                    page_url = f"{result['cloudinary_url']}#page={result['page_number']}"
+                    st.link_button("View Matched Page", page_url)
+    except Exception as e:
+        st.error(f"Search error: {e}")

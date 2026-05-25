@@ -17,13 +17,23 @@ class FaissSearchService:
 
     def _load_or_create_index(self):
         if os.path.exists(INDEX_PATH):
-            return faiss.read_index(INDEX_PATH)
+            try:
+                return faiss.read_index(INDEX_PATH)
+            except Exception:
+                if os.path.exists(INDEX_PATH):
+                    os.remove(INDEX_PATH)
+                return faiss.IndexFlatIP(self.dimension)
         return faiss.IndexFlatIP(self.dimension)
 
     def _load_mapping(self):
         if os.path.exists(MAPPING_PATH):
-            with open(MAPPING_PATH, "r", encoding="utf-8") as f:
-                return json.load(f)
+            try:
+                with open(MAPPING_PATH, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                if os.path.exists(MAPPING_PATH):
+                    os.remove(MAPPING_PATH)
+                return []
         return []
 
     def _save_index(self):

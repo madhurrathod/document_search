@@ -18,7 +18,7 @@ def init_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 filename TEXT NOT NULL,
                 cloudinary_url TEXT NOT NULL,
-                cloudinary_public_id TEXT NOT NULL,
+                cloudinary_public_id TEXT NOT NULL UNIQUE,
                 uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
