@@ -1,11 +1,10 @@
 streamlit
 pandas
-scikit-learn
 pypdf
 fastapi
 uvicorn
 faiss-cpu
 sentence-transformers
 cloudinary
-python-dotenv
 psycopg2-binary
+groq
