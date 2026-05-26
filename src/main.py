@@ -95,7 +95,5 @@ if st.button("Enter"):
         st.write("### Answer")
         st.write(response["answer"])
 
-        st.write("### Sources")
-        st.write(response["sources"])
     except Exception as e:
         st.error(f"RAG error: {e}")
