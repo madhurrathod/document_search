@@ -44,3 +44,16 @@ class SearchService:
             )
 
         return results
+    
+    def search_for_rag(self, query: str, top_k: int = 5, min_score: float = 0.5):
+        results = self.search(query, top_k=top_k)
+
+        if not results:
+            return []
+
+        filtered_results = [
+            result for result in results
+            if result["score"] >= min_score
+        ]
+
+        return filtered_results

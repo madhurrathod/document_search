@@ -5,6 +5,8 @@ from db.db_service import get_all_documents
 from db.database import init_db
 from services.search_service import SearchService
 from db.database import get_connection
+from services.rag_service import RagService  
+
 st.set_page_config(page_title="Document Search", page_icon="📄", layout="wide")
 init_db()
 
@@ -79,3 +81,21 @@ if query.strip():
                     st.link_button("View Matched Page", page_url)
     except Exception as e:
         st.error(f"Search error: {e}")
+        
+        
+st.subheader("RAG Test")
+
+test_query = st.text_input("Test RAG query")
+
+if st.button("Run RAG Test"):
+    try:
+        rag_service = RagService()
+        response = rag_service.answer_query(test_query)
+
+        st.write("### Answer")
+        st.write(response["answer"])
+
+        st.write("### Sources")
+        st.write(response["sources"])
+    except Exception as e:
+        st.error(f"RAG error: {e}")
