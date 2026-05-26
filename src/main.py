@@ -83,11 +83,11 @@ if query.strip():
         st.error(f"Search error: {e}")
         
         
-st.subheader("RAG Test")
+st.subheader("Questions about document")
 
-test_query = st.text_input("Test RAG query")
+test_query = st.text_input("insert your query")
 
-if st.button("Run RAG Test"):
+if st.button("Enter"):
     try:
         rag_service = RagService()
         response = rag_service.answer_query(test_query)
