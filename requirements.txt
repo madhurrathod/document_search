@@ -3,7 +3,6 @@ pandas
 pypdf
 fastapi
 uvicorn
-faiss-cpu
 sentence-transformers
 cloudinary
 psycopg2-binary

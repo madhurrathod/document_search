@@ -2,10 +2,14 @@ from io import BytesIO
 
 from pypdf import PdfReader
 
-from db.db_service import insert_document, insert_chunks
+from db.db_service import (
+    insert_document,
+    insert_chunks,
+    update_chunk_embeddings,
+    get_chunks_without_embeddings,
+)
 from services.cloudinary_service import upload_pdf
 from services.embedding_service import EmbeddingService
-from services.faiss_search_service import FaissSearchService
 
 
 def process_uploaded_document(uploaded_file):
@@ -38,7 +42,28 @@ def process_uploaded_document(uploaded_file):
     embeddings = embedding_service.embed_texts(texts)
 
     if embeddings.size > 0:
-        faiss_service = FaissSearchService(dimension=embeddings.shape[1])
-        faiss_service.add_embeddings(chunk_ids, embeddings)
+        update_chunk_embeddings(zip(chunk_ids, embeddings.tolist()))
 
     return doc_id
+
+
+def backfill_missing_embeddings():
+    """Compute and store embeddings for any chunks that don't have one yet.
+    Used to repopulate vectors for documents ingested before pgvector, or
+    after the old on-disk FAISS index was lost. Returns the number of
+    chunks updated."""
+    pending = get_chunks_without_embeddings()
+    if not pending:
+        return 0
+
+    texts = [chunk["text"] for chunk in pending]
+    chunk_ids = [chunk["chunk_id"] for chunk in pending]
+
+    embedding_service = EmbeddingService()
+    embeddings = embedding_service.embed_texts(texts)
+
+    if embeddings.size == 0:
+        return 0
+
+    update_chunk_embeddings(zip(chunk_ids, embeddings.tolist()))
+    return len(chunk_ids)

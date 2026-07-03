@@ -1,38 +1,26 @@
 from collections import defaultdict
 
-from db.db_service import get_chunk_results_by_ids
+from db.db_service import search_similar_chunks
 from services.embedding_service import EmbeddingService
-from services.faiss_search_service import FaissSearchService
 
 
 class SearchService:
     def __init__(self, model_name: str = "all-MiniLM-L6-v2"):
         self.embedding_service = EmbeddingService(model_name=model_name)
-        sample_embedding = self.embedding_service.embed_query("test")
-        self.faiss_service = FaissSearchService(dimension=sample_embedding.shape[1])
 
     def search(self, query: str, top_k: int = 5):
         query = query.strip()
         if not query:
             return []
 
-        query_embedding = self.embedding_service.embed_query(query)
-        matches = self.faiss_service.search(query_embedding, top_k=top_k)
+        query_embedding = self.embedding_service.embed_query(query)[0].tolist()
+        chunk_rows = search_similar_chunks(query_embedding, top_k=top_k)
 
-        if not matches:
+        if not chunk_rows:
             return []
 
-        chunk_ids = [match["chunk_id"] for match in matches]
-        chunk_rows = get_chunk_results_by_ids(chunk_ids)
-
-        row_map = {row["chunk_id"]: row for row in chunk_rows}
         results = []
-
-        for match in matches:
-            row = row_map.get(match["chunk_id"])
-            if not row:
-                continue
-
+        for row in chunk_rows:
             text = row["text"].strip()
             snippet = text[:300] + "..." if len(text) > 300 else text
 
@@ -46,7 +34,7 @@ class SearchService:
                     "cloudinary_public_id": row["cloudinary_public_id"],
                     "text": text,
                     "snippet": snippet,
-                    "score": float(match["score"]),
+                    "score": float(row["score"]),
                 }
             )
 

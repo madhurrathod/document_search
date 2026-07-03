@@ -1,6 +1,6 @@
 import streamlit as st
 
-from services.document_service import process_uploaded_document
+from services.document_service import process_uploaded_document, backfill_missing_embeddings
 from db.db_service import get_all_documents
 from db.database import init_db
 from services.search_service import SearchService
@@ -44,6 +44,17 @@ if submitted:
                 st.error(f"Error: {e}")
 
 st.subheader("All documents")
+
+if st.button("Rebuild missing embeddings"):
+    try:
+        updated = backfill_missing_embeddings()
+        if updated:
+            st.success(f"Embedded {updated} chunk(s) that were missing vectors.")
+        else:
+            st.info("All chunks already have embeddings.")
+    except Exception as e:
+        st.error(f"Backfill error: {e}")
+
 docs = get_all_documents()
 
 if not docs:
