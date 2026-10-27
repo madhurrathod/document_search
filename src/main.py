@@ -111,12 +111,25 @@ st.subheader("Questions about document")
 test_query = st.text_input("insert your query")
 
 if st.button("Enter"):
-    try:
-        rag_service = RagService()
-        response = rag_service.answer_query(test_query)
+    if not test_query.strip():
+        st.warning("Type a question first.")
+    else:
+        try:
+            rag_service = RagService()
+            response = rag_service.answer_query(test_query)
 
-        st.write("### Answer")
-        st.write(response["answer"])
+            st.write("### Answer")
+            st.write(response["answer"])
 
-    except Exception as e:
-        st.error(f"RAG error: {e}")
+            # Show where the answer came from, so it can be checked.
+            if response["sources"]:
+                st.write("**Sources**")
+                for source in response["sources"]:
+                    page_url = f"{source['cloudinary_url']}#page={source['page_number']}"
+                    st.markdown(
+                        f"- [{source['filename']}, page {source['page_number']}]({page_url})"
+                        f" (similarity {source['score']:.2f})"
+                    )
+
+        except Exception as e:
+            st.error(f"RAG error: {e}")
