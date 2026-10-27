@@ -4,21 +4,27 @@ from services.document_service import process_uploaded_document, backfill_missin
 from db.db_service import get_all_documents
 from db.database import init_db
 from services.search_service import SearchService
-from db.database import get_connection
-from services.rag_service import RagService  
+from services.rag_service import RagService
 
 st.set_page_config(page_title="Document Search", page_icon="📄", layout="wide")
-init_db()
+
+
+@st.cache_resource(show_spinner="Connecting to database...")
+def setup_database():
+    # Streamlit reruns this file on every click/keystroke; schema setup only
+    # needs to happen once per server process.
+    init_db()
+    return True
+
 
 try:
-    conn = get_connection()
-    conn.close()
-    st.success("Supabase connected successfully")
+    setup_database()
 except Exception as e:
+    # Previously init_db() ran outside any try block, so an unreachable DB
+    # (e.g. a Supabase free project paused after 7 days idle) crashed the
+    # whole page with a traceback.
     st.error(f"Database connection failed: {e}")
-
-st.set_page_config(page_title="Document Search", page_icon="📄", layout="wide")
-init_db()
+    st.stop()
 
 st.title("Document Search")
 
@@ -55,7 +61,13 @@ if st.button("Rebuild missing embeddings"):
     except Exception as e:
         st.error(f"Backfill error: {e}")
 
-docs = get_all_documents()
+try:
+    docs = get_all_documents()
+except Exception as e:
+    # The schema setup above is cached, so it won't catch the DB going
+    # away later (e.g. Supabase pausing an idle project) — check here too.
+    st.error(f"Database connection failed: {e}")
+    st.stop()
 
 if not docs:
     st.info("No documents uploaded yet.")
