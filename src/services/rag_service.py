@@ -2,10 +2,17 @@ import streamlit as st
 from groq import Groq
 from services.search_service import SearchService
 
+# Groq shut down llama-3.1-8b-instant on 16 Aug 2026; every RAG call failed
+# after that. The model is now a setting, so the next retirement is a
+# secrets change instead of a code change.
+DEFAULT_GROQ_MODEL = "openai/gpt-oss-20b"
+
+
 class RagService:
     def __init__(self):
         self.search_service = SearchService()
         self.client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+        self.model = st.secrets.get("GROQ_MODEL", DEFAULT_GROQ_MODEL)
 
     def retrieve_context(self, query: str, top_k: int = 8, min_score: float = 0.5):
         ranked_documents = self.search_service.search_for_rag(
@@ -77,7 +84,7 @@ Context:
 """
 
         response = self.client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model=self.model,
             messages=[
                 {
                     "role": "system",
