@@ -43,9 +43,9 @@ def init_db():
                 id SERIAL PRIMARY KEY,
                 document_id INTEGER NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
                 page_number INTEGER NOT NULL,
+                chunk_index INTEGER NOT NULL DEFAULT 0,
                 text TEXT NOT NULL,
-                embedding vector({EMBEDDING_DIMENSION}),
-                UNIQUE(document_id, page_number)
+                embedding vector({EMBEDDING_DIMENSION})
             )
         """)
 
@@ -53,6 +53,22 @@ def init_db():
         cur.execute(f"""
             ALTER TABLE chunks
             ADD COLUMN IF NOT EXISTS embedding vector({EMBEDDING_DIMENSION})
+        """)
+
+        # Migration: a page is now split into several chunks, so uniqueness
+        # moves from (document, page) to (document, page, chunk_index).
+        # Old rows get chunk_index 0 and keep working.
+        cur.execute("""
+            ALTER TABLE chunks
+            ADD COLUMN IF NOT EXISTS chunk_index INTEGER NOT NULL DEFAULT 0
+        """)
+        cur.execute("""
+            ALTER TABLE chunks
+            DROP CONSTRAINT IF EXISTS chunks_document_id_page_number_key
+        """)
+        cur.execute("""
+            CREATE UNIQUE INDEX IF NOT EXISTS uq_chunks_doc_page_chunk
+            ON chunks(document_id, page_number, chunk_index)
         """)
 
         cur.execute("""

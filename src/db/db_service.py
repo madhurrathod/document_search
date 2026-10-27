@@ -66,15 +66,15 @@ def insert_chunks(document_id, chunks):
     try:
         cur = conn.cursor()
 
-        for page_number, text in chunks:
+        for page_number, chunk_index, text in chunks:
             cur.execute(
                 """
-                INSERT INTO chunks (document_id, page_number, text)
-                VALUES (%s, %s, %s)
-                ON CONFLICT (document_id, page_number) DO NOTHING
+                INSERT INTO chunks (document_id, page_number, chunk_index, text)
+                VALUES (%s, %s, %s, %s)
+                ON CONFLICT (document_id, page_number, chunk_index) DO NOTHING
                 RETURNING id
                 """,
-                (document_id, page_number, text),
+                (document_id, page_number, chunk_index, text),
             )
             row = cur.fetchone()
 
