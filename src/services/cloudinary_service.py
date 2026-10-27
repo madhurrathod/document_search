@@ -9,12 +9,14 @@ cloudinary.config(
     secure=True,
 )
 
-def upload_pdf(file_bytes: bytes, filename: str) -> dict:
+def upload_pdf(file_bytes: bytes, public_id: str) -> dict:
+    # public_id includes a content hash, so different files never collide
+    # and overwrite=False can't destroy an existing document.
     result = cloudinary.uploader.upload(
         file_bytes,
         resource_type="raw",
-        public_id=f"documents/{filename}",
-        overwrite=True
+        public_id=public_id,
+        overwrite=False
     )
     return {
         "secure_url": result["secure_url"],

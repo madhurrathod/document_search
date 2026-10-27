@@ -6,6 +6,20 @@ def _to_pgvector(embedding):
     return "[" + ",".join(repr(float(value)) for value in embedding) + "]"
 
 
+def find_document_by_public_id(cloudinary_public_id):
+    conn = get_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT id FROM documents WHERE cloudinary_public_id = %s",
+            (cloudinary_public_id,),
+        )
+        row = cur.fetchone()
+        return row["id"] if row else None
+    finally:
+        conn.close()
+
+
 def insert_document(filename, cloudinary_url, cloudinary_public_id):
     conn = get_connection()
     try:

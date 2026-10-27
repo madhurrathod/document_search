@@ -1,8 +1,10 @@
+import hashlib
 from io import BytesIO
 
 from pypdf import PdfReader
 
 from db.db_service import (
+    find_document_by_public_id,
     insert_document,
     insert_chunks,
     update_chunk_embeddings,
@@ -48,12 +50,25 @@ def extract_chunks(file_bytes):
 
 def process_uploaded_document(uploaded_file):
     file_bytes = uploaded_file.getvalue()
-    result = upload_pdf(file_bytes, uploaded_file.name)
 
+    # Validate before uploading, so a scanned/empty PDF doesn't leave an
+    # orphaned file in Cloudinary.
     chunks = extract_chunks(file_bytes)
-
     if not chunks:
         raise ValueError("No readable text found in the uploaded PDF.")
+
+    # Identify a document by its content, not its filename. Previously two
+    # different files named "notes.pdf" shared one Cloudinary id: the second
+    # upload overwrote the first PDF, but the database kept the first file's
+    # text, so search results pointed at the wrong file.
+    content_hash = hashlib.sha256(file_bytes).hexdigest()[:16]
+    public_id = f"documents/{content_hash}-{uploaded_file.name}"
+
+    existing_id = find_document_by_public_id(public_id)
+    if existing_id is not None:
+        return existing_id  # identical file already indexed
+
+    result = upload_pdf(file_bytes, public_id)
 
     doc_id = insert_document(
         uploaded_file.name,
@@ -77,9 +92,7 @@ def process_uploaded_document(uploaded_file):
 
 def backfill_missing_embeddings():
     """Compute and store embeddings for any chunks that don't have one yet.
-    Used to repopulate vectors for documents ingested before pgvector, or
-    after the old on-disk FAISS index was lost. Returns the number of
-    chunks updated."""
+    Returns the number of chunks updated."""
     pending = get_chunks_without_embeddings()
     if not pending:
         return 0
