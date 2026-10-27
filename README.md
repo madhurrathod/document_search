@@ -8,7 +8,7 @@ This project is built using:
 
 **Streamlit** for the user interface.
 
-**Supabase Postgres** for storing document metadata and text chunks.
+**Supabase Postgres + pgvector** for storing document metadata, text chunks and their embeddings, and for vector similarity search (HNSW index, cosine distance).
 
 **Cloudinary** for storing uploaded PDF files.
 
@@ -16,23 +16,21 @@ This project is built using:
 
 **Sentence Transformers** for generating embeddings.
 
-**FAISS** for semantic similarity search.
-
 **Groq** for the RAG answer generation layer.
 
 ## Current Implementation
-The current system supports PDF upload, text extraction, chunk storage, embedding generation, and semantic retrieval using FAISS. It is designed to return the most relevant document sections based on user queries instead of relying only on exact keyword or file-name matches.
+The current system supports PDF upload, text extraction, chunk storage, embedding generation, and semantic retrieval using pgvector. It is designed to return the most relevant document sections based on user queries instead of relying only on exact keyword or file-name matches.
 
-At query time, the system embeds the user query, searches the FAISS index, fetches the matching chunk metadata from Postgres, and returns the most relevant results with document context. The next layer of the project uses those retrieved chunks as context for RAG-based answer generation. 
+At query time, the system embeds the user query, runs a cosine-similarity search over the chunk embeddings in Postgres (pgvector), and returns the most relevant results with document context. The next layer of the project uses those retrieved chunks as context for RAG-based answer generation. 
 
 ## Flow:
 1.	Upload a PDF.
 2.	Store the file in Cloudinary.
 3.	Extract text using PyPDF.
-4.	Split the document into chunk-based sections.
+4.	Split each page into ~150-word chunks with 30-word overlap (the embedding model truncates input after 256 word pieces).
 5.	Store metadata and chunk text in Supabase Postgres.
-6.	Generate embeddings using Sentence Transformers.
-7.	Index embeddings in FAISS for semantic retrieval.
+6.	Generate embeddings using Sentence Transformers (all-MiniLM-L6-v2, 384 dimensions).
+7.	Store embeddings in pgvector, indexed with HNSW.
 8.	Retrieve top matching chunks for a user query.
 9.	Use retrieved chunks as context for RAG-based answers with Groq.
 
@@ -46,6 +44,8 @@ Create .streamlit/secrets.toml:
 
 ```text
 GROQ_API_KEY = "your_groq_api_key"
+# Optional; defaults to openai/gpt-oss-20b
+GROQ_MODEL = "openai/gpt-oss-20b"
 
 [postgres]
 host = "YOUR_SUPABASE_POOLER_HOST"
@@ -65,3 +65,13 @@ api_secret = "your_cloudinary_api_secret"
 ```bash
 streamlit run src/main.py
 ```
+
+## Measuring retrieval quality
+`scripts/eval_retrieval.py` runs a list of questions (with the file and page that answers each) through the search and reports hit@1, hit@5, MRR and the similarity scores of correct vs. wrong matches. Use it to choose the RAG relevance cutoff (`DEFAULT_MIN_SCORE` in `src/services/rag_service.py`).
+
+```bash
+python scripts/eval_retrieval.py scripts/eval_questions.csv
+```
+
+`scripts/eval_documents/` holds three fictional test PDFs whose key facts sit near the bottom of long pages, past where an un-chunked page would be truncated. `scripts/eval_questions.csv` has 12 questions with the file and page that answers each, plus 3 that none of the documents answer. Upload the three PDFs through the app, then run the script.
+
