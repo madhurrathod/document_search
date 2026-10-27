@@ -1,8 +1,5 @@
 streamlit
-pandas
 pypdf
-fastapi
-uvicorn
 sentence-transformers
 cloudinary
 psycopg2-binary
